@@ -17,8 +17,9 @@ I've tried to make this POSIX compliant for GNU and BSD.
 
 ## To use:
 
-Download to your system and then run it.  
-e.g. "sh ./enable-build-plates.sh" or set executable.
+Download to your system and then run it. 
+
+e.g. "sh ./enable-build-plates.sh" or set executable on Linux/macOS/WSL, or right click and run with PowerShell on Windows.
 
 It updates files in-place, and does NOT make backups of them.
 
@@ -27,7 +28,6 @@ macOS: `$HOME/Library/Application Support/BambuStudio/system/BBL/machine`
 Linux (AppImage): `$HOME/.config/BambuStudio/system/BBL/machine`  
 Linux (Flatpak): `$HOME/.var/app/com.bambulab.BambuStudio/config/BambuStudio/system/BBL/machine`  
 Windows (Linux/WSL): `%AppData%\BambuStudio\system\BBL\machine`
-
 
 ## Info
 2026-08-18  
