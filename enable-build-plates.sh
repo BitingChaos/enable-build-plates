@@ -17,6 +17,9 @@
 # Tested with sh/bash/zsh on macOS, Linux, and WSL.
 # I've tried to make this POSIX compliant for GNU and BSD.
 #
+# 2026-11-24
+# * clear values instead of deleting lines
+# * leave default plate image type alone
 #
 # 2026-08-18
 # * first test
@@ -26,9 +29,8 @@
 #
 
 
-# restrictive lines to delete
-LINES_TO_DELETE='"image_bed_type"
-"bottom_texture_end_name"
+# restrictive lines to clear
+LINES_TO_DELETE='"bottom_texture_end_name"
 "not_support_bed_type"'
 
 
@@ -78,7 +80,7 @@ for file in "$JSON_LOC"/*.json; do
   CHANGED=false
 
   # check each line in LINES_TO_DELETE
-  printf '%s\n' "$LINES_TO_DELETE" | while IFS= read -r line; do
+  for line in $LINES_TO_DELETE; do
 
     # only touch files that have the lines
     if grep -q "$line" "$file"; then
@@ -86,11 +88,11 @@ for file in "$JSON_LOC"/*.json; do
       # use printf to pass the pattern to sed
       pattern=$(printf '%s' "$line")
 
-      # delete if the line matches the pattern
-      if [ $OS = "macOS" ]; then
-        sed -i "" "/${pattern}/d" "$file"
+      # clear the value while preserving the rest of the line
+      if [ "$OS" = "macOS" ]; then
+        sed -i "" "/${pattern}/s/: *\"[^\"]*\"/: \"\"/" "$file"
       else
-        sed -i "/${pattern}/d" "$file"
+        sed -i "/${pattern}/s/: *\"[^\"]*\"/: \"\"/" "$file"
       fi
 
       CHANGED=true
@@ -118,31 +120,31 @@ export JSON_LOC_PAK="$HOME/.var/app/com.bambulab.BambuStudio/config/BambuStudio/
 
 
 if [ -e "$JSON_LOC_MAC" ]; then
-  printf "Script for $OS\n"
+  # printf "Script for $OS\n"
   export JSON_LOC=$JSON_LOC_MAC
-  printf "Checking path: $JSON_LOC\n\n"
+  printf "Path found: $JSON_LOC\n\n"
   file_loop
 fi
 
 if [ -e "$JSON_LOC_APP" ]; then
-  printf "Script for $OS\n"
+  # printf "Script for $OS\n"
   export JSON_LOC=$JSON_LOC_APP
-  printf "Checking path: $JSON_LOC\n\n"
+  printf "Path found: $JSON_LOC\n\n"
   file_loop
 fi
 
 if [ -e "$JSON_LOC_PAK" ]; then
-  printf "Script for $OS\n"
+  # printf "Script for $OS\n"
   export JSON_LOC=$JSON_LOC_PAK
-  printf "Checking path: $JSON_LOC\n\n"
+  printf "Path found: $JSON_LOC\n\n"
   file_loop
 fi
 
 if [ $OS = "Windows" ]; then
   if [ -e "$JSON_LOC_WIN" ]; then
-    printf "Script for $OS\n"
+    # printf "Script for $OS\n"
     export JSON_LOC=$JSON_LOC_WIN
-    printf "Checking path: $JSON_LOC\n\n"
+    printf "Path found: $JSON_LOC\n\n"
     file_loop
   fi
 fi
