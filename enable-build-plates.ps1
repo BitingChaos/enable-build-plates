@@ -9,6 +9,10 @@ https://xenomorph.net
 
 PowerShell version for Windows
 
+2026-11-24
+* clear values instead of deleting lines
+* leave default plate image type alone
+
 2026-11-12
 * first test
 
@@ -20,7 +24,6 @@ Write-Host ""
 
 # Restrictive entries to remove
 $LinesToDelete = @(
-    '"image_bed_type"'
     '"bottom_texture_end_name"'
     '"not_support_bed_type"'
 )
@@ -42,22 +45,33 @@ function Process-JsonFiles {
 
         $Changed = $false
 
-        foreach ($LinePattern in $LinesToDelete) {
+    foreach ($LinePattern in $LinesToDelete) {
 
-            if ($Content -match [regex]::Escape($LinePattern)) {
+        $NewContent = $Content | ForEach-Object {
 
-                $Content = $Content | Where-Object {
-                    $_ -notmatch [regex]::Escape($LinePattern)
-                }
+            if ($_ -match [regex]::Escape($LinePattern)) {
 
-                $Changed = $true
+                $_ -replace '(:\s*")([^"]*)(")', '$1$3'
+
+            } else {
+
+                $_
             }
+
         }
+
+        if (($NewContent -join "`n") -ne ($Content -join "`n")) {
+            $Content = $NewContent
+            $Changed = $true
+        }
+    }
 
         if ($Changed) {
             Set-Content -Path $File -Value $Content -Encoding UTF8
             Write-Host "File updated: $File"
         }
+
+
     }
 
     Write-Host ""
@@ -67,7 +81,7 @@ foreach ($JsonPath in $JsonLocations) {
 
     if (Test-Path $JsonPath) {
 
-        Write-Host "Script for Windows"
+        # Write-Host "Script for Windows"
         Write-Host "Checking path: $JsonPath"
         Write-Host ""
 
