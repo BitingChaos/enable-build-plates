@@ -30,6 +30,10 @@ Linux (Flatpak): `$HOME/.var/app/com.bambulab.BambuStudio/config/BambuStudio/sys
 Windows (Linux/WSL): `%AppData%\BambuStudio\system\BBL\machine`
 
 ## Info
+2026-11-24
+* clear values instead of deleting lines
+* leave default plate image type alone
+
 2026-08-18  
 * first test
 
